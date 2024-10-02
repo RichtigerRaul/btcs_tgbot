@@ -4,6 +4,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 const BtcPriceApp = () => {
   const [btcData, setBtcData] = useState(null);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchBtcData();
@@ -13,21 +14,26 @@ const BtcPriceApp = () => {
 
   const fetchBtcData = async () => {
     try {
+      setLoading(true);
       const response = await fetch('http://localhost:5000/api/btc-data');
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
+      console.log("Fetched data:", data); // Log the fetched data
       setBtcData(data);
       setError(null);
     } catch (error) {
       console.error('Error fetching BTC data:', error);
-      setError('Failed to fetch BTC data. Please try again later.');
+      setError('Failed to fetch BTC data. Please ensure the local server is running.');
+    } finally {
+      setLoading(false);
     }
   };
 
+  if (loading) return <div>Loading...</div>;
   if (error) return <div className="text-red-600">{error}</div>;
-  if (!btcData) return <div>Loading...</div>;
+  if (!btcData) return <div>No data available</div>;
 
   return (
     <div className="container mx-auto p-4">
@@ -64,5 +70,4 @@ const BtcPriceApp = () => {
   );
 };
 
-export default BtcPriceApp;
 export default BtcPriceApp;
