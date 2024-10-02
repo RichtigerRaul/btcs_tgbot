@@ -3,6 +3,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 
 const BtcPriceApp = () => {
   const [btcData, setBtcData] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchBtcData();
@@ -12,14 +13,20 @@ const BtcPriceApp = () => {
 
   const fetchBtcData = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/btc-data');
+      const response = await fetch('http://localhost:5000/api/btc-data');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const data = await response.json();
       setBtcData(data);
+      setError(null);
     } catch (error) {
       console.error('Error fetching BTC data:', error);
+      setError('Failed to fetch BTC data. Please try again later.');
     }
   };
 
+  if (error) return <div className="text-red-600">{error}</div>;
   if (!btcData) return <div>Loading...</div>;
 
   return (
@@ -27,7 +34,7 @@ const BtcPriceApp = () => {
       <h1 className="text-2xl font-bold mb-4">Bitcoin Price Dashboard</h1>
       <div className="bg-white rounded-lg shadow-md p-4 mb-4">
         <h2 className="text-xl font-semibold mb-2">Current Price</h2>
-        <p className="text-3xl font-bold text-green-600">${btcData.currentPrice}</p>
+        <p className="text-3xl font-bold text-green-600">${btcData.currentPrice.toFixed(2)}</p>
       </div>
       <div className="bg-white rounded-lg shadow-md p-4 mb-4">
         <h2 className="text-xl font-semibold mb-2">24h Price Chart</h2>
@@ -45,16 +52,17 @@ const BtcPriceApp = () => {
         <div className="bg-white rounded-lg shadow-md p-4">
           <h2 className="text-lg font-semibold mb-2">24h Change</h2>
           <p className={`text-xl font-bold ${btcData.priceChange24h >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-            {btcData.priceChange24h}%
+            {btcData.priceChange24h.toFixed(2)}%
           </p>
         </div>
         <div className="bg-white rounded-lg shadow-md p-4">
           <h2 className="text-lg font-semibold mb-2">Market Cap</h2>
-          <p className="text-xl font-bold">${btcData.marketCap}</p>
+          <p className="text-xl font-bold">${btcData.marketCap.toLocaleString()}</p>
         </div>
       </div>
     </div>
   );
 };
 
+export default BtcPriceApp;
 export default BtcPriceApp;
