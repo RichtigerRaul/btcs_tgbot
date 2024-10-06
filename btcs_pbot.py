@@ -7,7 +7,7 @@ from datetime import datetime
 
 # Configuration
 EXBITRON_API_URL = "https://api.exbitron.digital/api/v2/peatio/public/markets/btcsusdt/tickers"
-TELEGRAM_TOKEN = "8141429324:AAEkRhzprmSy1A0VUcXmKIsCiDQMmZAxaLE"
+TELEGRAM_TOKEN = "YOUR TOKEN ID"
 TOTAL_SUPPLY = 21000000  # Assumed total supply of BTCS Tokens
 BOT_VERSION = "v2.2.0"
 SUPPORT_GROUP_LINK = "https://t.me/BTCSBITCOINSILVER"
